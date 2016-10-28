@@ -1,0 +1,14 @@
+#container {
+    /*border: 1px solid black;*/
+}
+
+.bars {
+    background-color: steelblue;
+    text-align: right;
+    padding-bottom: 7px;
+    padding-right: 2px;
+    margin: 1px;
+    color: white;
+    height: 10px;
+}
+
