@@ -18,7 +18,7 @@
 }
 
 .legend {
-    width: 75px;
+    width: 90px;
     margin-left: 10px;
     text-align: center;
     font-family: sans-serif;
@@ -28,7 +28,7 @@
 }
 
 .floating-block {
-    float: left;
+    display: inline-block;
 }
 
 .sort-button {

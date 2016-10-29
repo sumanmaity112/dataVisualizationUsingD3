@@ -33,7 +33,6 @@ var createChart = function (container, data) {
         .style("width", function (d) {
             return widthScale(d.score) + "px";
         })
-        .style("background-color", "black")
         .style("background-color", function (d) {
             return color(d.subject)
         });
@@ -44,22 +43,21 @@ var sortBy = function (fieldName) {
     bars.sort(function (recent, previous) {
         if (recent[fieldName] < previous[fieldName])
             return -1;
-        if (recent[fieldName] > previous[fieldName])
-            return 1;
-        return recent.score - previous.score;
+        return recent[fieldName] > previous[fieldName] ? 1 : recent.score - previous.score;
     });
 };
 
 
 var getUniqueSubjects = function (data) {
+    var subjects = {};
     data.forEach(function (d) {
-        if (uniqueSubjects.indexOf(d.subject) == -1)
-            uniqueSubjects.push(d.subject);
+        subjects[d.subject] = true;
     });
+    uniqueSubjects = Object.keys(subjects);
     return uniqueSubjects;
 };
 
-var createSubjectsButton = function (data) {
+var createLegend = function (data) {
     var subjects = getUniqueSubjects(data);
     var innerHtml = "";
     subjects.forEach(function (subject) {
@@ -69,7 +67,6 @@ var createSubjectsButton = function (data) {
 };
 
 window.onload = function () {
-    createSubjectsButton(data);
-    var container = d3.select("#container");
-    createChart(container, data);
+    createLegend(data);
+    createChart(d3.select("#container"), data);
 };
