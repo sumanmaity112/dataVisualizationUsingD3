@@ -1,0 +1,43 @@
+.bars {
+    text-align: center;
+    padding-bottom: 7px;
+    padding-right: 2px;
+    margin: 1px;
+    color: white;
+    height: 10px;
+    font-family: sans-serif;
+    font-weight: 100;
+}
+
+.radial-corner {
+    border-radius: 10px;
+}
+
+.button-container {
+    padding-top: 10px;
+}
+
+.legend {
+    width: 75px;
+    margin-left: 10px;
+    text-align: center;
+    font-family: sans-serif;
+    font-weight: 100;
+    color: white;
+    border-radius: 25px;
+}
+
+.floating-block {
+    float: left;
+}
+
+.sort-button {
+    margin-left: 10px;
+    border-radius: 10px;
+    font-family: sans-serif;
+    width: 80px;
+}
+
+button:focus {
+    outline: none;
+}

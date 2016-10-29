@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Scores</title>
+    <link rel="stylesheet" href="styles/studentScores.css">
+</head>
+<body>
+<script type="text/javascript" src="lib/http_cdnjs.cloudflare.com_ajax_libs_d3_4.2.8_d3.js"></script>
+<script type="text/javascript" src="scripts/studentScores.js"></script>
+<div id="container"></div>
+<div class="button-container">
+    <label>Sort by:</label>
+    <button class="sort-button" onclick="sortBy('name')">Name</button>
+    <button class="sort-button" onclick="sortBy('subject')">Subject</button>
+    <button class="sort-button" onclick="sortBy('score')">Score</button>
+</div>
+<div id="subject-legend" class="button-container">
+   <div class="floating-block"><label>Subjects:</label></div>
+</div>
+</body>
+</html>
