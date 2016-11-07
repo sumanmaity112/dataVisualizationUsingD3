@@ -1,4 +1,4 @@
-.data{
+.cell {
     width: 100px;
     height: 20px;
     border: 1px solid black;
@@ -7,6 +7,6 @@
     margin-left: 10px;
 }
 
-.row{
+.row {
     margin-top: 10px;
 }

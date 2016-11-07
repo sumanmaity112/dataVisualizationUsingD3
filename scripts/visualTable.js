@@ -2,15 +2,14 @@ var LOG = d3.scaleLog().domain([1, 10]);
 var FORMAT = d3.format(".4f");
 var POW = d3.scalePow().exponent(2);
 
-
 var insertData = function (visualTable, data, generator) {
     visualTable.append("div")
         .classed("row", true)
-        .selectAll("data")
+        .selectAll("cell")
         .data(data)
         .enter()
         .append("div")
-        .classed("data", true)
+        .classed("cell", true)
         .text(function (value) {
             return isNaN(value) ? value : generator(value);
         });
@@ -24,22 +23,22 @@ var getRoundedLog = function (value) {
     return Math.round(LOG(value));
 };
 
-function createTable(visualTable, data) {
-    insertData(visualTable, ["Title"].concat(data), function (d) {
-        return d;
+var createTable = function (visualTable, data, generators, columnHeaders) {
+    generators.forEach(function (generator, index) {
+        insertData(visualTable, new Array(columnHeaders[index]).concat(data), generator);
     });
-    insertData(visualTable, ["n"].concat(data), function (d) {
-        return d;
-    });
-    insertData(visualTable, ["n^2"].concat(data), POW);
-    insertData(visualTable, ["log(n)"].concat(data), getLog);
-    insertData(visualTable, ["rounded log(n)"].concat(data), getRoundedLog);
-}
+};
+
 var main = function () {
     var data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     var visualTable = d3.select("#container").append("div").attr("id", "visualTable");
 
-    createTable(visualTable, data);
+    var generateSameValue = function (value) {
+        return value;
+    };
+    var generators = [generateSameValue, generateSameValue, POW, getLog, getRoundedLog];
+    var columnHeaders = ["Title", "n", "n^2", "log(n)", "rounded log(n)"];
+    createTable(visualTable, data, generators, columnHeaders);
 };
 
 window.onload = main;
