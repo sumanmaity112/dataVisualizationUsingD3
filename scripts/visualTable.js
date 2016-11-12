@@ -9,6 +9,7 @@ var getLog = function (value) {
 var generateSameValue = function (value) {
     return value;
 };
+
 var generators = [generateSameValue, generateSameValue, POW, getLog, ROUNDED_LOG];
 var columnHeaders = ["Title", "n", "n^2", "log(n)", "rounded log(n)"];
 var data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
