@@ -16,18 +16,27 @@ var getTriangle = function () {
     return d3.symbol().type(d3.symbolTriangle).size(area);
 };
 
+var colorScale = d3.scaleOrdinal()
+    .domain(["line", "circle", "triangle", "square"])
+    .range(["gray", "red", "green", "steelblue"]);
+
+var xScale = d3.scaleLinear()
+    .domain([0, 3])
+    .range([0, 450]);
+
 var getLine = function () {
-    return "M -" + 0 + " " + DIMENSION / 2 + " L100" + " -" + DIMENSION / 2;
+    return " M" + DIMENSION + " -" + DIMENSION / 2 + " L" + 0 + " " + DIMENSION / 2;
 };
 
-var drawShape = function (svg, shape, numberOfShape) {
-    var padding = PADDING * numberOfShape;
-    var startingPoint = DIMENSION * (numberOfShape);
+var drawShape = function (svg, shapeInformation, numberOfShape) {
     svg.append("g")
-        .attr("transform", "translate(" + (startingPoint + padding) + "," + DIMENSION + ")")
+        .attr("transform", "translate(" + (xScale(numberOfShape) + shapeInformation.padding) + "," + DIMENSION + ")")
         .append("path")
         .classed("shape", true)
-        .attr("d", shape);
+        .attr("d", shapeInformation.shape)
+        .style("stroke", function () {
+            return colorScale(shapeInformation.name);
+        });
 };
 
 var drawShapes = function () {
@@ -35,7 +44,12 @@ var drawShapes = function () {
         .attr("width", 1000)
         .attr("height", 700);
 
-    var shapes = [getLine(), getCircle(), getSquare(), getTriangle()];
+    var shapes = [{shape: getLine(), padding: 0, name: "line"}, {shape: getCircle(), padding: PADDING, name: "circle"},
+        {shape: getSquare(), padding: PADDING, name: "square"}, {
+            shape: getTriangle(),
+            padding: PADDING,
+            name: "triangle"
+        }];
 
     shapes.forEach(function (shape, index) {
         drawShape(svg, shape, index);
