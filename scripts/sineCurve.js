@@ -4,6 +4,7 @@ const MARGIN = 30;
 const DIVIDED_BY = 10;
 const INNER_WIDTH = WIDTH - 2 * MARGIN;
 const INNER_HEIGHT = HEIGHT - 2 * MARGIN;
+const SHIFTED_BY = 5;
 
 var XScale = d3.scaleLinear()
     .domain([0, 1.0])
@@ -61,8 +62,11 @@ var drawLineWithCircles = function (svg, line, data) {
 var generateValuePoints = function (data) {
     var convertedValues = [];
     var sineValues = [];
+    for (var counter = 0; counter <= 9; counter++) {
+        sineValues.push({x: counter / DIVIDED_BY, y: (Math.sin(counter) + SHIFTED_BY) / DIVIDED_BY});
+    }
+    
     data.forEach(function (value) {
-        sineValues.push({x: value.x / DIVIDED_BY, y: (Math.sin(value.x) + 5) / DIVIDED_BY});
         convertedValues.push({x: value.x / DIVIDED_BY, y: value.y / DIVIDED_BY});
     });
     return {converted: convertedValues, sine: sineValues};
