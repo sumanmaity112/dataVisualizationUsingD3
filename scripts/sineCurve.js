@@ -6,6 +6,10 @@ const INNER_WIDTH = WIDTH - 2 * MARGIN;
 const INNER_HEIGHT = HEIGHT - 2 * MARGIN;
 const SHIFTED_BY = 5;
 
+var DATA = [{x: 0, y: 5}, {x: 1, y: 9}, {x: 2, y: 7}, {x: 3, y: 5},
+    {x: 4, y: 3}, {x: 6, y: 4}, {x: 7, y: 2}, {x: 8, y: 3}, {x: 9, y: 2}];
+var SVG;
+
 var XScale = d3.scaleLinear()
     .domain([0, 1.0])
     .range([0, INNER_WIDTH]);
@@ -49,14 +53,14 @@ var drawCircles = function (svg, data) {
     g.selectAll('circle').exit().remove();
 };
 
-var drawLineWithCircles = function (svg, line, data) {
+var drawLine = function (svg, line, data, shouldCreateCircle) {
     svg.append("g").append("path")
         .datum(data)
         .attr("d", line)
         .attr('transform', translate(MARGIN, MARGIN))
         .classed("line", true);
 
-    drawCircles(svg, data);
+    shouldCreateCircle ? drawCircles(svg, data) : d3.selectAll(".circle").remove();
 };
 
 var generateValuePoints = function (data) {
@@ -65,43 +69,41 @@ var generateValuePoints = function (data) {
     for (var counter = 0; counter <= 9; counter++) {
         sineValues.push({x: counter / DIVIDED_BY, y: (Math.sin(counter) + SHIFTED_BY) / DIVIDED_BY});
     }
-    
+
     data.forEach(function (value) {
         convertedValues.push({x: value.x / DIVIDED_BY, y: value.y / DIVIDED_BY});
     });
     return {converted: convertedValues, sine: sineValues};
 };
 
+var line = d3.line()
+    .x(function (d) {
+        return XScale(d.x);
+    })
+    .y(function (d) {
+        return YScale(d.y);
+    });
+
+var sineLine = d3.line()
+    .x(function (d) {
+        return XScale(d.x);
+    })
+    .y(function (d) {
+        return YScale(d.y);
+    });
+
+var drawLines = function (shouldCreateCircle) {
+    var values = generateValuePoints(DATA);
+    drawLine(SVG, line, values.converted, shouldCreateCircle);
+    drawLine(SVG, sineLine, values.sine, shouldCreateCircle);
+};
+
 var generateChart = function () {
-    var svg = d3.select("#container").append("svg")
+    SVG = d3.select("#container").append("svg")
         .attr("height", HEIGHT)
         .attr("width", WIDTH);
-
-    var data = [{x: 0, y: 5}, {x: 1, y: 9}, {x: 2, y: 7}, {x: 3, y: 5},
-        {x: 4, y: 3}, {x: 6, y: 4}, {x: 7, y: 2}, {x: 8, y: 3}, {x: 9, y: 2}];
-
-    var values = generateValuePoints(data);
-
-    var line = d3.line()
-        .x(function (d) {
-            return XScale(d.x);
-        })
-        .y(function (d) {
-            return YScale(d.y);
-        });
-
-    var sineLine = d3.line()
-        .x(function (d) {
-            return XScale(d.x);
-        })
-        .y(function (d) {
-            return YScale(d.y);
-        });
-
-    drawAxis(svg, XAxis, translate(MARGIN, HEIGHT - MARGIN));
-    drawAxis(svg, YAxis, translate(MARGIN, MARGIN));
-    drawLineWithCircles(svg, line, values.converted);
-    drawLineWithCircles(svg, sineLine, values.sine);
+    drawAxis(SVG, XAxis, translate(MARGIN, HEIGHT - MARGIN));
+    drawAxis(SVG, YAxis, translate(MARGIN, MARGIN));
 };
 
 window.onload = generateChart;
