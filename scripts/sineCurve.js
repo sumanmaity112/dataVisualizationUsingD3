@@ -8,7 +8,7 @@ const SHIFTED_BY = 5;
 
 var DATA = [{x: 0, y: 5}, {x: 1, y: 9}, {x: 2, y: 7}, {x: 3, y: 5},
     {x: 4, y: 3}, {x: 6, y: 4}, {x: 7, y: 2}, {x: 8, y: 3}, {x: 9, y: 2}];
-var SVG;
+var SVG, VALUES;
 
 var XScale = d3.scaleLinear()
     .domain([0, 1.0])
@@ -53,12 +53,12 @@ var drawCircles = function (svg, data) {
     g.selectAll('circle').exit().remove();
 };
 
-var drawLine = function (svg, line, data, shouldCreateCircle) {
+var drawLine = function (svg, line, data, className, shouldCreateCircle) {
     svg.append("g").append("path")
         .datum(data)
         .attr("d", line)
         .attr('transform', translate(MARGIN, MARGIN))
-        .classed("line", true);
+        .classed(className, true);
 
     shouldCreateCircle ? drawCircles(svg, data) : d3.selectAll(".circle").remove();
 };
@@ -76,29 +76,51 @@ var generateValuePoints = function (data) {
     return {converted: convertedValues, sine: sineValues};
 };
 
-var line = d3.line()
-    .x(function (d) {
-        return XScale(d.x);
-    })
-    .y(function (d) {
-        return YScale(d.y);
-    });
-
-var sineLine = d3.line()
-    .x(function (d) {
-        return XScale(d.x);
-    })
-    .y(function (d) {
-        return YScale(d.y);
-    });
-
 var drawLines = function (shouldCreateCircle) {
-    var values = generateValuePoints(DATA);
-    drawLine(SVG, line, values.converted, shouldCreateCircle);
-    drawLine(SVG, sineLine, values.sine, shouldCreateCircle);
+    clearSVG();
+    var line = d3.line()
+        .x(function (d) {
+            return XScale(d.x);
+        })
+        .y(function (d) {
+            return YScale(d.y);
+        });
+
+    drawLine(SVG, line, VALUES.converted, "line convertedLine", shouldCreateCircle);
+    drawLine(SVG, line, VALUES.sine, "line sineLine", shouldCreateCircle);
+};
+
+var drawCurve = function (svg, data, curve, className) {
+    svg.append("g").append("path")
+        .datum(data)
+        .attr("d", d3.line()
+            .curve(curve)
+            .x(function (d) {
+                return XScale(d.x);
+            })
+            .y(function (d) {
+                return YScale(d.y);
+            })
+        )
+        .attr('transform', translate(MARGIN, MARGIN))
+        .classed(className, true);
+};
+
+var clearSVG = function () {
+    SVG.selectAll('.line').remove();
+};
+
+var drawCurves = function (curve) {
+    clearSVG();
+    curve = d3[curve];
+    drawCurve(SVG, VALUES.converted, curve, "line convertedLine");
+    drawCurve(SVG, VALUES.sine, curve, "line sineLine");
+    drawCircles(SVG, VALUES.converted);
+    drawCircles(SVG, VALUES.sine);
 };
 
 var generateChart = function () {
+    VALUES = generateValuePoints(DATA);
     SVG = d3.select("#container").append("svg")
         .attr("height", HEIGHT)
         .attr("width", WIDTH);

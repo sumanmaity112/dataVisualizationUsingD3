@@ -11,6 +11,18 @@
 <div>
     <button onclick="drawLines()">Draw Lines</button>
     <button onclick="drawLines(true)">Draw Lines with circles</button>
+    <div>
+        <select onchange="drawCurves(this.value)">
+
+            <option value="curveBasis">curveBasis</option>
+            <option value="curveBasisClosed">curveBasisClosed</option>
+            <option value="curveLinear">Linear Curve</option>
+            <option value="curveLinearClosed">Closed Linear Curve</option>
+            <option value="curveMonotoneX">curveMonotoneX</option>
+            <option value="curveNatural">curveNatural</option>
+            <option value="curveStepAfter">curveStep</option>
+        </select>
+    </div>
 </div>
 <div id="container"></div>
 </body>

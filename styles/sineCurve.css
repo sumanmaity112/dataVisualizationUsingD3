@@ -1,10 +1,16 @@
 .line {
     fill: none;
-    stroke: steelblue;
     stroke-width: 2px;
+}
+.convertedLine{
+    stroke: darkred;
+}
+
+.sineLine{
+    stroke: darkblue;
 }
 
 .circle {
     fill: white;
-    stroke: gray;
+    stroke: steelblue;
 }
