@@ -10,6 +10,16 @@ var DATA = [{x: 0, y: 5}, {x: 1, y: 9}, {x: 2, y: 7}, {x: 3, y: 5},
     {x: 4, y: 3}, {x: 6, y: 4}, {x: 7, y: 2}, {x: 8, y: 3}, {x: 9, y: 2}];
 var SVG, VALUES;
 
+var curves = [
+    {name: "Linear Curve", method: d3.curveLinear},
+    {name: "Closed Linear Curve", method: d3.curveLinearClosed},
+    {name: "Step After Curve", method: d3.curveStepAfter},
+    {name: "Basis Curve", method: d3.curveBasis},
+    {name: "Bundle Curve", method: d3.curveBundle},
+    {name: "Cardinal Closed Curve", method: d3.curveCardinalClosed},
+    {name: "Cardinal Curve", method: d3.curveCardinal}
+];
+
 var XScale = d3.scaleLinear()
     .domain([0, 1.0])
     .range([0, INNER_WIDTH]);
@@ -110,16 +120,35 @@ var clearSVG = function () {
     SVG.selectAll('.line').remove();
 };
 
-var drawCurves = function (curve) {
+var getCurve = function () {
+    var select = d3.select('select');
+    var selectedIndex = select.property('selectedIndex');
+    return curves[selectedIndex].method;
+};
+
+var drawCurves = function () {
     clearSVG();
-    curve = d3[curve];
+    var curve = getCurve();
     drawCurve(SVG, VALUES.converted, curve, "line convertedLine");
     drawCurve(SVG, VALUES.sine, curve, "line sineLine");
     drawCircles(SVG, VALUES.converted);
     drawCircles(SVG, VALUES.sine);
 };
 
+var appendOptions = function () {
+    var optionContainer = d3.select("#container").append("div").classed("optionContainer", true);
+    optionContainer.append("select").on("change", drawCurves)
+        .selectAll("option")
+        .data(curves)
+        .enter()
+        .append("option")
+        .text(function (curve) {
+            return curve.name;
+        });
+};
+
 var generateChart = function () {
+    appendOptions();
     VALUES = generateValuePoints(DATA);
     SVG = d3.select("#container").append("svg")
         .attr("height", HEIGHT)
