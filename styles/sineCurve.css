@@ -1,0 +1,10 @@
+.line {
+    fill: none;
+    stroke-width: 2px;
+    stroke: steelblue;
+}
+
+.circle {
+    fill: white;
+    stroke: steelblue;
+}
