@@ -11,67 +11,21 @@ var DATA = [{x: 0, y: 5}, {x: 1, y: 9}, {x: 2, y: 7}, {x: 3, y: 5},
 var SVG, VALUES;
 
 var curves = [
-    {name: "Linear Curve", method: d3.curveLinear},
-    {name: "Closed Linear Curve", method: d3.curveLinearClosed},
-    {name: "Step After Curve", method: d3.curveStepAfter},
-    {name: "Basis Curve", method: d3.curveBasis},
-    {name: "Bundle Curve", method: d3.curveBundle},
-    {name: "Cardinal Closed Curve", method: d3.curveCardinalClosed},
-    {name: "Cardinal Curve", method: d3.curveCardinal}
+    {name: "Linear Curve", value: d3.curveLinear},
+    {name: "Closed Linear Curve", value: d3.curveLinearClosed},
+    {name: "Step After Curve", value: d3.curveStepAfter},
+    {name: "Basis Curve", value: d3.curveBasis},
+    {name: "Bundle Curve", value: d3.curveBundle},
+    {name: "Cardinal Closed Curve", value: d3.curveCardinalClosed},
+    {name: "Cardinal Curve", value: d3.curveCardinal}
 ];
 
-var XScale = d3.scaleLinear()
-    .domain([0, 1.0])
-    .range([0, INNER_WIDTH]);
-
-var YScale = d3.scaleLinear()
-    .domain([0, 1.0])
-    .range([INNER_HEIGHT, 0]);
+var XScale = getScale([0, 1.0], [0, INNER_WIDTH]);
+var YScale = getScale([0, 1], [INNER_HEIGHT, 0]);
 
 var YAxis = d3.axisLeft(YScale);
 var XAxis = d3.axisBottom(XScale);
-
-var translate = function (x, y) {
-    return "translate(" + x + "," + y + ")";
-};
-
-var drawAxis = function (svg, axis, translator) {
-    svg.append("g")
-        .call(axis)
-        .attr('transform', translator)
-        .classed("axis", true);
-};
-
-var drawCircles = function (svg, data) {
-    var g = svg.append('g')
-        .attr('transform', translate(MARGIN, MARGIN));
-
-    g.selectAll('circle').data(data)
-        .enter().append('circle')
-        .classed("circle", true)
-        .attr('r', 4.5);
-
-    var circles = g.selectAll('circle');
-
-    circles.attr('cx', function (d) {
-            return XScale(d.x)
-        })
-        .attr('cy', function (d) {
-            return YScale(d.y)
-        });
-
-    g.selectAll('circle').exit().remove();
-};
-
-var drawLine = function (svg, line, data, className, shouldCreateCircle) {
-    svg.append("g").append("path")
-        .datum(data)
-        .attr("d", line)
-        .attr('transform', translate(MARGIN, MARGIN))
-        .classed(className, true);
-
-    shouldCreateCircle ? drawCircles(svg, data) : d3.selectAll(".circle").remove();
-};
+var line = getLine(XScale, YScale, "x", "y");
 
 var generateValuePoints = function (data) {
     var convertedValues = [];
@@ -86,69 +40,29 @@ var generateValuePoints = function (data) {
     return {converted: convertedValues, sine: sineValues};
 };
 
-var drawLines = function (shouldCreateCircle) {
+var drawLines = function (line, shouldCreateCircle) {
     clearSVG();
-    var line = d3.line()
-        .x(function (d) {
-            return XScale(d.x);
-        })
-        .y(function (d) {
-            return YScale(d.y);
-        });
+    drawLine(SVG, line, VALUES.converted, "line convertedLine", translate(MARGIN, MARGIN));
+    drawLine(SVG, line, VALUES.sine, "line convertedLine", translate(MARGIN, MARGIN));
 
-    drawLine(SVG, line, VALUES.converted, "line convertedLine", shouldCreateCircle);
-    drawLine(SVG, line, VALUES.sine, "line sineLine", shouldCreateCircle);
-};
-
-var drawCurve = function (svg, data, curve, className) {
-    svg.append("g").append("path")
-        .datum(data)
-        .attr("d", d3.line()
-            .curve(curve)
-            .x(function (d) {
-                return XScale(d.x);
-            })
-            .y(function (d) {
-                return YScale(d.y);
-            })
-        )
-        .attr('transform', translate(MARGIN, MARGIN))
-        .classed(className, true);
+    if (shouldCreateCircle)
+        drawCircles(SVG, VALUES.sine.concat(VALUES.converted), 4.5);
+    else
+        d3.selectAll(".circle").remove();
 };
 
 var clearSVG = function () {
     SVG.selectAll('.line').remove();
 };
 
-var getCurve = function () {
-    var select = d3.select('select');
-    var selectedIndex = select.property('selectedIndex');
-    return curves[selectedIndex].method;
-};
-
 var drawCurves = function () {
     clearSVG();
-    var curve = getCurve();
-    drawCurve(SVG, VALUES.converted, curve, "line convertedLine");
-    drawCurve(SVG, VALUES.sine, curve, "line sineLine");
-    drawCircles(SVG, VALUES.converted);
-    drawCircles(SVG, VALUES.sine);
-};
-
-var appendOptions = function () {
-    var optionContainer = d3.select("#container").append("div").classed("optionContainer", true);
-    optionContainer.append("select").on("change", drawCurves)
-        .selectAll("option")
-        .data(curves)
-        .enter()
-        .append("option")
-        .text(function (curve) {
-            return curve.name;
-        });
+    var curve = getSelectedValue(d3.select('select'), curves);
+    drawLines(line.curve(curve), true);
 };
 
 var generateChart = function () {
-    appendOptions();
+    appendOptions(d3.select("#container"), curves, drawCurves);
     VALUES = generateValuePoints(DATA);
     SVG = d3.select("#container").append("svg")
         .attr("height", HEIGHT)

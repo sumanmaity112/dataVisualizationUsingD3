@@ -14,103 +14,25 @@ var curves = [
 ];
 
 var drawCurves = function (svg) {
-    var values = generateValuePoints();
+    var values = generateValues(valueGenerator, 0, 9);
     return function (tensionInPercentage) {
         d3.select(".line").remove();
-        tensionInPercentage = tensionInPercentage || getTension();
+        tensionInPercentage = tensionInPercentage || getSelectedValue(d3.select('select'), curves);
         line = line.curve(d3.curveCardinal.tension(tensionScale(tensionInPercentage)));
-        drawLine(svg, line, values, "line", true);
+        drawLine(svg, line, values, "line", translate(MARGIN, MARGIN));
+        drawCircles(svg, values);
     }
-
 };
 
-var appendOptions = function (svg) {
-    var optionContainer = d3.select("#container").append("div").classed("optionContainer", true);
-    optionContainer.text('Tension').append("select").on("change", drawCurves(svg))
-        .selectAll("option")
-        .data(curves)
-        .enter()
-        .append("option")
-        .text(function (curve) {
-            return curve.name;
-        });
+var XScale = getScale([0, 10], [0, INNER_WIDTH]);
+var YScale = getScale([0, 1], [INNER_HEIGHT, 0]);
+
+var valueGenerator = function (value) {
+    var y = (Math.sin(3 * value) + 1) / 2;
+    return {x: value, y: y}
 };
 
-var getTension = function () {
-    var select = d3.select('select');
-    var selectedIndex = select.property('selectedIndex');
-    return curves[selectedIndex].value;
-};
-
-var XScale = d3.scaleLinear()
-    .domain([0, 10])
-    .range([0, INNER_WIDTH]);
-
-var YScale = d3.scaleLinear()
-    .domain([0, 1])
-    .range([INNER_HEIGHT, 0]);
-
-var YAxis = d3.axisLeft(YScale);
-var XAxis = d3.axisBottom(XScale);
-
-var translate = function (x, y) {
-    return "translate(" + x + "," + y + ")";
-};
-
-var drawAxis = function (svg, axis, translator) {
-    svg.append("g")
-        .call(axis)
-        .attr('transform', translator)
-        .classed("axis", true);
-};
-
-var drawCircles = function (svg, data) {
-    var g = svg.append('g')
-        .attr('transform', translate(MARGIN, MARGIN));
-
-    g.selectAll('circle').data(data)
-        .enter().append('circle')
-        .classed("circle", true)
-        .attr('r', 4.5);
-
-    var circles = g.selectAll('circle');
-
-    circles.attr('cx', function (d) {
-            return XScale(d.x)
-        })
-        .attr('cy', function (d) {
-            return YScale(d.y)
-        });
-
-    g.selectAll('circle').exit().remove();
-};
-
-var drawLine = function (svg, line, data, className) {
-    svg.append("g").append("path")
-        .datum(data)
-        .attr("d", line)
-        .attr('transform', translate(MARGIN, MARGIN))
-        .classed(className, true);
-
-    drawCircles(svg, data);
-};
-
-var generateValuePoints = function () {
-    var sineValues = [];
-    for (var counter = 0; counter <= 9; counter++) {
-        var y = (Math.sin(3 * counter) + 1) / 2;
-        sineValues.push({x: counter, y: y});
-    }
-    return sineValues
-};
-var line = d3.line()
-    .x(function (d) {
-        return XScale(d.x);
-    })
-    .y(function (d) {
-        return YScale(d.y);
-    });
-
+var line = getLine(XScale, YScale, "x", "y");
 
 var tensionScale = d3.scaleLinear()
     .domain([0, 100])
@@ -120,9 +42,9 @@ var generateChart = function () {
     var svg = d3.select("#container").append("svg")
         .attr("height", HEIGHT)
         .attr("width", WIDTH);
-    drawAxis(svg, XAxis, translate(MARGIN, HEIGHT - MARGIN));
-    drawAxis(svg, YAxis, translate(MARGIN, MARGIN));
-    appendOptions(svg);
+    drawAxis(svg, d3.axisBottom(XScale), translate(MARGIN, HEIGHT - MARGIN));
+    drawAxis(svg, d3.axisLeft(YScale), translate(MARGIN, MARGIN));
+    appendOptions(d3.select("#container"), curves, drawCurves(svg));
     drawCurves(svg)(0);
 };
 

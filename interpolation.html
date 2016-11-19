@@ -7,10 +7,11 @@
 </head>
 <body>
 <script type="text/javascript" src="lib/http_cdnjs.cloudflare.com_ajax_libs_d3_4.2.8_d3.js"></script>
+<script type="text/javascript" src="lib/common.js"></script>
 <script type="text/javascript" src="scripts/interpolation.js"></script>
 <div>
-    <button onclick="drawLines()">Draw Lines</button>
-    <button onclick="drawLines(true)">Draw Lines with circles</button>
+    <button onclick="drawLines(line)">Draw Lines</button>
+    <button onclick="drawLines(line, true)">Draw Lines with circles</button>
 </div>
 <div id="container"></div>
 </body>
