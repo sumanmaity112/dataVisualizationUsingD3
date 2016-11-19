@@ -1,0 +1,14 @@
+.area {
+    fill: rgb(218,230,240);
+}
+
+.line {
+    fill: none;
+    stroke-width: 5px;
+    stroke: rgb(77,134,180);
+}
+
+.circle {
+    fill: white;
+    stroke: steelblue;
+}
