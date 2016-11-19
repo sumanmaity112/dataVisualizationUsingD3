@@ -1,11 +1,12 @@
 .area {
-    fill: rgb(218,230,240);
+    fill: steelblue;
+    opacity: 0.25;
 }
 
 .line {
     fill: none;
-    stroke-width: 5px;
-    stroke: rgb(77,134,180);
+    stroke-width: 2px;
+    stroke: steelblue;
 }
 
 .circle {
