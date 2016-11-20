@@ -20,8 +20,8 @@ var curves = [
     {name: "Cardinal Curve", value: d3.curveCardinal}
 ];
 
-var XScale = getScale([0, 1.0], [0, INNER_WIDTH]);
-var YScale = getScale([0, 1], [INNER_HEIGHT, 0]);
+var XScale = getLinearScale([0, 1.0], [0, INNER_WIDTH]);
+var YScale = getLinearScale([0, 1], [INNER_HEIGHT, 0]);
 
 var YAxis = d3.axisLeft(YScale);
 var XAxis = d3.axisBottom(XScale);

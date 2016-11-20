@@ -24,8 +24,8 @@ var drawCurves = function (svg) {
     }
 };
 
-var XScale = getScale([0, 10], [0, INNER_WIDTH]);
-var YScale = getScale([0, 1], [INNER_HEIGHT, 0]);
+var XScale = getLinearScale([0, 10], [0, INNER_WIDTH]);
+var YScale = getLinearScale([0, 1], [INNER_HEIGHT, 0]);
 
 var valueGenerator = function (value) {
     var y = (Math.sin(3 * value) + 1) / 2;
