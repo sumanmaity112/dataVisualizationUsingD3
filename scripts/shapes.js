@@ -16,13 +16,8 @@ var getTriangle = function () {
     return d3.symbol().type(d3.symbolTriangle).size(area);
 };
 
-var colorScale = d3.scaleOrdinal()
-    .domain(["line", "circle", "triangle", "square"])
-    .range(["gray", "red", "green", "steelblue"]);
-
-var xScale = d3.scaleLinear()
-    .domain([0, 3])
-    .range([0, 450]);
+var colorScale = getOrdinalScale(["line", "circle", "triangle", "square"], ["gray", "red", "green", "steelblue"]);
+var xScale = getLinearScale([0, 3], [0, 450]);
 
 var getLine = function () {
     return " M" + DIMENSION + " -" + DIMENSION / 2 + " L" + 0 + " " + DIMENSION / 2;
@@ -40,10 +35,7 @@ var drawShape = function (svg, shapeInformation, numberOfShape) {
 };
 
 var drawShapes = function () {
-    var svg = d3.select("#container").append("svg")
-        .attr("width", 1000)
-        .attr("height", 700);
-
+    var svg = appendSvg(d3.select("#container"), 1000, 700);
     var shapes = [{shape: getLine(), padding: 0, name: "line"}, {shape: getCircle(), padding: PADDING, name: "circle"},
         {shape: getSquare(), padding: PADDING, name: "square"}, {
             shape: getTriangle(),

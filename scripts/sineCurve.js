@@ -33,10 +33,7 @@ var valueGenerator = function (value) {
 };
 
 var line = getLine(XScale, YScale, "x", "y");
-
-var tensionScale = d3.scaleLinear()
-    .domain([0, 100])
-    .range([-1, 1]);
+var tensionScale = getLinearScale([0, 100], [-1, 1]);
 
 var generateChart = function () {
     var selector = d3.select("#container");
