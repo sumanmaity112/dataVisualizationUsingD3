@@ -41,17 +41,16 @@ var drawArea = function () {
 };
 
 var clearSVG = function () {
-  d3.selectAll(".area").remove();
-  d3.selectAll(".line").remove();
-  d3.selectAll("circle").remove();
+    d3.selectAll(".area").remove();
+    d3.selectAll(".line").remove();
+    d3.selectAll("circle").remove();
 };
 
 var generateChart = function () {
-    appendOptions(d3.select("#container"), curves, drawArea);
+    var selector = d3.select("#container");
+    appendOptions(selector, curves, drawArea);
     VALUES = generateValues(valueGenerator, 0, 10);
-    SVG = d3.select("#container").append("svg")
-        .attr("height", HEIGHT)
-        .attr("width", WIDTH);
+    SVG = appendSvg(selector, HEIGHT, WIDTH);
     drawAxis(SVG, d3.axisLeft(YScale), translate(MARGIN, MARGIN));
     drawAxis(SVG, d3.axisBottom(XScale), translate(MARGIN, HEIGHT - MARGIN));
 

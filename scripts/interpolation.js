@@ -62,11 +62,10 @@ var drawCurves = function () {
 };
 
 var generateChart = function () {
-    appendOptions(d3.select("#container"), curves, drawCurves);
+    var selector = d3.select("#container");
+    appendOptions(selector, curves, drawCurves);
     VALUES = generateValuePoints(DATA);
-    SVG = d3.select("#container").append("svg")
-        .attr("height", HEIGHT)
-        .attr("width", WIDTH);
+    SVG = appendSvg(selector, HEIGHT, WIDTH);
     drawAxis(SVG, XAxis, translate(MARGIN, HEIGHT - MARGIN));
     drawAxis(SVG, YAxis, translate(MARGIN, MARGIN));
 };

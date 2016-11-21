@@ -41,10 +41,9 @@ var drawChart = function () {
         })
 };
 var generateChart = function () {
-    appendOptions(d3.select("#container"), options, drawChart);
-    SVG = d3.select("#container").append("svg")
-        .attr("height", HEIGHT)
-        .attr("width", WIDTH);
+    var selector = d3.select("#container");
+    appendOptions(selector, options, drawChart);
+    SVG = appendSvg(selector, HEIGHT, WIDTH);
 };
 
 window.onload = generateChart;

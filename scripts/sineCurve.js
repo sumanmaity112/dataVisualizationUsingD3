@@ -39,12 +39,11 @@ var tensionScale = d3.scaleLinear()
     .range([-1, 1]);
 
 var generateChart = function () {
-    var svg = d3.select("#container").append("svg")
-        .attr("height", HEIGHT)
-        .attr("width", WIDTH);
+    var selector = d3.select("#container");
+    var svg = appendSvg(selector, HEIGHT, WIDTH);
     drawAxis(svg, d3.axisBottom(XScale), translate(MARGIN, HEIGHT - MARGIN));
     drawAxis(svg, d3.axisLeft(YScale), translate(MARGIN, MARGIN));
-    appendOptions(d3.select("#container"), curves, drawCurves(svg));
+    appendOptions(selector, curves, drawCurves(svg));
     drawCurves(svg)(0);
 };
 
