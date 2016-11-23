@@ -6,9 +6,11 @@ const INNER_HEIGHT = HEIGHT - 2 * MARGIN;
 var SVG;
 
 var data = [1, 1, 2, 2, 1, 2, 1];
-
+var domain = generateValues(function (index) {
+    return index;
+}, 0, data.length);
 var colorScale = d3.scaleOrdinal()
-    .domain([0, data.length])
+    .domain(domain)
     .range(d3.schemeCategory20);
 
 var options = [
@@ -26,9 +28,7 @@ var drawChart = function () {
     var arc = d3.arc()
         .outerRadius(INNER_HEIGHT / 2)
         .innerRadius(selectedValues.innerRadius);
-    var pieG = SVG.append("g").attr("id", "chart").selectAll("g")
-        .data(data)
-        .enter()
+    var pieG = SVG.append("g").attr("id", "chart")
         .append("g")
         .attr("transform", "translate(" + [INNER_WIDTH / 2, INNER_HEIGHT / 2] + ")");
 
